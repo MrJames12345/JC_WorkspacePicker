@@ -58,16 +58,25 @@ def launch_editor(name):
         logger.error(f"Error launching editor: {e}")
         print(f"Error launching editor: {e}")
 
-def select_profile(profile):
+def select_profile(profile, big_chrome_only=False):
     """Handle profile selection when a tile is clicked or Enter is pressed.
-    Respects profile preferences for Chrome 1, Chrome 2, and JC_TheGoodWorkStation."""
-    logger.info(f"select_profile called: name='{profile.get('name')}'")
+    Respects profile preferences for Chrome 1, Chrome 2, and JC_TheGoodWorkStation.
+    When big_chrome_only=True (Alt+Click / Alt+Enter), opens only Chrome 2 (Large)
+    and skips Chrome 1 (Small) and JC_TheGoodWorkStation."""
+    logger.info(f"select_profile called: name='{profile.get('name')}', big_chrome_only={big_chrome_only}")
 
-    open_chrome1 = profile.get("openChrome1", True)
-    chrome1_urls = profile.get("chrome1Urls", [])
-    open_chrome2 = profile.get("openChrome2", True)
-    chrome2_urls = profile.get("chrome2Urls", [])
-    open_workspace = profile.get("openJCTheGoodWorkspace", profile.get("openWorkspace", True))
+    if big_chrome_only:
+        open_chrome1 = False
+        chrome1_urls = []
+        open_chrome2 = True
+        chrome2_urls = profile.get("chrome2Urls", [])
+        open_workspace = False
+    else:
+        open_chrome1 = profile.get("openChrome1", True)
+        chrome1_urls = profile.get("chrome1Urls", [])
+        open_chrome2 = profile.get("openChrome2", True)
+        chrome2_urls = profile.get("chrome2Urls", [])
+        open_workspace = profile.get("openJCTheGoodWorkspace", profile.get("openWorkspace", True))
 
     if open_chrome1 or open_chrome2:
         logger.info(
@@ -885,15 +894,24 @@ def create_dashboard():
 
             def handle_click(event, prof=profile):
                 is_shift = bool(event and (event.state & 0x1))
+                is_alt = bool(event and (event.state & (0x20000 | 0x0008)))
                 if is_shift:
                     logger.info(f"Shift+Click on tile: '{prof.get('name')}'")
                     open_edit_modal(prof)
+                elif is_alt:
+                    logger.info(f"Alt+Click on tile: '{prof.get('name')}' (big Chrome only)")
+                    select_profile(prof, big_chrome_only=True)
                 else:
                     select_profile(prof)
 
             def handle_shift_click(event, prof=profile):
                 logger.info(f"<Shift-Button-1> on tile: '{prof.get('name')}'")
                 open_edit_modal(prof)
+
+            def handle_alt_click(event, prof=profile):
+                logger.info(f"<Alt-Button-1> on tile: '{prof.get('name')}' (big Chrome only)")
+                select_profile(prof, big_chrome_only=True)
+                return "break"
 
             img = get_profile_photo_image(profile["name"])
             if img:
@@ -902,14 +920,17 @@ def create_dashboard():
                 image_label.place(relx=0.5, rely=0.5, anchor=tk.CENTER)
                 image_label.bind("<Button-1>", handle_click)
                 image_label.bind("<Shift-Button-1>", handle_shift_click)
+                image_label.bind("<Alt-Button-1>", handle_alt_click)
             else:
                 canvas = tk.Canvas(tile_frame, width=TILE_WIDTH - 20, height=TILE_HEIGHT - 20, bg="#7ec7d2")
                 canvas.place(relx=0.5, rely=0.5, anchor=tk.CENTER)
                 canvas.bind("<Button-1>", handle_click)
                 canvas.bind("<Shift-Button-1>", handle_shift_click)
+                canvas.bind("<Alt-Button-1>", handle_alt_click)
 
             tile_frame.bind("<Button-1>", handle_click)
             tile_frame.bind("<Shift-Button-1>", handle_shift_click)
+            tile_frame.bind("<Alt-Button-1>", handle_alt_click)
 
     def _enter_search_mode():
         if search_state["mode"]:
@@ -947,20 +968,27 @@ def create_dashboard():
         search_state["query"] = query
         populate_tiles()
 
-    def _on_enter(event=None):
+    def _on_enter(event=None, force_alt=False):
         if active_modal and active_modal.winfo_exists():
             return "break"
         if not matching_profiles:
             return "break"
         target_profile = matching_profiles[0]
         is_shift = bool(event and (event.state & 0x1))
+        is_alt = force_alt or bool(event and (event.state & (0x20000 | 0x0008)))
         if is_shift:
             logger.info(f"Shift+Enter pressed: opening modal for profile='{target_profile.get('name')}'")
             open_edit_modal(target_profile)
+        elif is_alt:
+            logger.info(f"Alt+Enter pressed: profile='{target_profile.get('name')}' (big Chrome only)")
+            select_profile(target_profile, big_chrome_only=True)
         else:
             logger.info(f"Enter pressed: profile='{target_profile.get('name')}'")
             select_profile(target_profile)
         return "break"
+
+    def _on_alt_enter(event=None):
+        return _on_enter(event, force_alt=True)
 
     def _on_escape(event=None):
         if active_modal and active_modal.winfo_exists():
@@ -1028,10 +1056,13 @@ def create_dashboard():
         "<Return>", "<KP_Enter>",
         "<Control-Return>", "<Control-KP_Enter>",
         "<Shift-Return>", "<Shift-KP_Enter>",
-        "<Alt-Return>", "<Alt-KP_Enter>",
     ):
         search_entry.bind(ret_key, _on_enter)
         root.bind_all(ret_key, _on_enter)
+
+    for alt_ret_key in ("<Alt-Return>", "<Alt-KP_Enter>"):
+        search_entry.bind(alt_ret_key, _on_alt_enter)
+        root.bind_all(alt_ret_key, _on_alt_enter)
 
     root.bind_all("<KeyPress>", _on_key_press)
     root.bind_all("<Escape>", _on_escape)

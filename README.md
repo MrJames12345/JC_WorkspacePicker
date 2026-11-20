@@ -9,6 +9,7 @@ To see current profile number:
 
 ### Profile Editing Modal
 - **Shift + Click** on any profile tile (or press **Shift + Enter** on the matched profile) to open the edit modal.
+- **Alt + Click** on any profile tile (or press **Alt + Enter** on the matched profile) to launch **only Chrome 2 (Large)**, skipping Chrome 1 (Small) and JC_TheGoodWorkStation.
 - Configurable options:
   - **Open Chrome 1 (Small)**: Toggle Monitor 1 browser window. When ticked, displays the list of URL tiles to open on this window, with drag-and-drop reordering (drag `::` handle or tile up/down), a `+` button to add URLs, and `✕` to delete.
   - **Open Chrome 2 (Large)**: Toggle Monitor 2 browser window. When ticked, displays the list of URL tiles to open on this window, with drag-and-drop reordering (drag `::` handle or tile up/down), a `+` button to add URLs, and `✕` to delete.
