@@ -2,7 +2,18 @@
     {
         "name": "CasellaWeb",
         "commandEdge": "\"C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe\" --profile-directory=\"Profile 2\"",
-        "commandChrome": "\"C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe\" --profile-directory=\"Profile 1\""
+        "commandChrome": "\"C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe\" --profile-directory=\"Profile 1\"",
+        "openChrome1": true,
+        "chrome1Urls": [
+            "https://keep.google.com/u/0/#NOTE/1dnsU7kmX7A0aAzGJAc_1SY50s22xKTqww2iq36tbl_SECuH3yg1nDiI7IB40Zz8",
+            "https://gemini.google.com/u/1/notebook/604cf2db-65ab-4fe8-b35e-d191f171fc5d"
+        ],
+        "openChrome2": true,
+        "chrome2Urls": [
+            "https://outlook.cloud.microsoft/mail/"
+        ],
+        "openJCTheGoodWorkspace": true,
+        "openWorkspace": true
     },
     {
         "name": "CasellaKitchen",
@@ -10,10 +21,14 @@
         "commandChrome": "\"C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe\" --profile-directory=\"Profile 4\"",
         "openChrome1": true,
         "chrome1Urls": [
-            "https://vercel.com/mrjames12345s-projects/casella-kitchen/deployments"
+            "https://keep.google.com/u/0/#NOTE/1PrnBn1ZdSc2N5KULxq65izl4unT-Iuk3h2iz1gXOHMq_uoQKTqRD-PS9cSwOtKw",
+            "https://gemini.google.com/u/1/app/fb579616c8ed3d9c"
         ],
         "openChrome2": true,
-        "chrome2Urls": [],
+        "chrome2Urls": [
+            "https://vercel.com/mrjames12345s-projects/casella-kitchen/deployments",
+            "https://casellakitchen.com.au/admin/products"
+        ],
         "openJCTheGoodWorkspace": true,
         "openWorkspace": true
     },
@@ -50,7 +65,8 @@
         "chrome2Urls": [
             "https://vercel.com/aims-engineering/aims-project-management-test/deployments",
             "https://aims-project-management-test.vercel.app/",
-            "https://vercel.com/aims-engineering/aims-project-management/deployments"
+            "https://vercel.com/aims-engineering/aims-project-management/deployments",
+            "https://projects.aimsengineering.com.au/settings"
         ],
         "openJCTheGoodWorkspace": true,
         "openWorkspace": true
