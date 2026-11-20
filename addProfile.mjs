@@ -80,8 +80,8 @@ async function main() {
     }
 
     // Configuration
-    const PROFILES_FILE = "C:\\repo\\JC_PickEdgeProfile\\profiles.json";
-    const IMAGES_DIR = "C:\\repo\\JC_PickEdgeProfile\\images";
+    const PROFILES_FILE = "C:\\repo\\JC_WorkspacePicker\\profiles.json";
+    const IMAGES_DIR = "C:\\repo\\JC_WorkspacePicker\\images";
 
     // 2. Prompt for Profile Name
     let PROFILE_NAME = "";

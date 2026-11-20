@@ -1,4 +1,4 @@
-# JC_PickEdgeProfile
+# JC_WorkspacePicker
 
 Dashboard suite for launching Google Chrome profiles and JC_TheGoodWorkStation. Includes a project launcher that scans `C:\repo` for `JC_*` folders.
 
