@@ -192,6 +192,7 @@ def configure_custom_scrollbar(widget):
 
 root = None
 active_modal = None
+active_modal_close = None
 
 def open_edit_modal(profile):
     """Open a modal dialog to edit profile settings:
@@ -199,7 +200,7 @@ def open_edit_modal(profile):
     - Open Chrome 2 (Large) + URL tiles list with '+' button to add new
     - Open JC_TheGoodWorkspace
     """
-    global active_modal
+    global active_modal, active_modal_close
     if active_modal and active_modal.winfo_exists():
         try:
             active_modal.lift()
@@ -273,14 +274,26 @@ def open_edit_modal(profile):
     footer_frame.pack(side=tk.BOTTOM, fill=tk.X)
 
     def close_modal():
-        global active_modal
-        active_modal = None
+        global active_modal, active_modal_close
+        if active_modal == modal:
+            active_modal = None
+            active_modal_close = None
         try:
             modal.grab_release()
         except Exception:
             pass
-        modal.destroy()
-        root.focus_set()
+        try:
+            if modal.winfo_exists():
+                modal.destroy()
+        except Exception:
+            pass
+        try:
+            if root and root.winfo_exists():
+                root.focus_set()
+        except Exception:
+            pass
+
+    active_modal_close = close_modal
 
     def save_and_close():
         profile["openChrome1"] = bool(open_chrome1_var.get())
@@ -561,10 +574,16 @@ def open_edit_modal(profile):
             url_entry.focus_set()
             _update_scroll()
 
-        def hide_add_input():
+        def hide_add_input(event=None):
             add_input_frame.pack_forget()
             add_btn.pack(anchor="w", pady=(2, 4))
             _update_scroll()
+            if event is not None:
+                try:
+                    modal.focus_set()
+                except Exception:
+                    pass
+                return "break"
 
         def commit_new_url(event=None):
             val = url_entry.get().strip()
@@ -572,6 +591,12 @@ def open_edit_modal(profile):
                 urls_list.append(val)
                 render_tiles()
             hide_add_input()
+            if event is not None:
+                try:
+                    modal.focus_set()
+                except Exception:
+                    pass
+                return "break"
 
         add_btn = tk.Button(
             action_frame,
@@ -602,7 +627,7 @@ def open_edit_modal(profile):
         )
         url_entry.pack(side=tk.LEFT, fill=tk.X, expand=True, padx=(0, 6), ipady=3)
         url_entry.bind("<Return>", commit_new_url)
-        url_entry.bind("<Escape>", lambda e: hide_add_input())
+        url_entry.bind("<Escape>", hide_add_input)
 
         confirm_btn = tk.Button(
             add_input_frame,
@@ -730,8 +755,13 @@ def open_edit_modal(profile):
     )
     cb3.pack(anchor="w")
 
+    def _on_modal_escape(event=None):
+        logger.info(f"Escape pressed in edit modal for '{profile_name}', closing modal only...")
+        close_modal()
+        return "break"
+
     modal.protocol("WM_DELETE_WINDOW", close_modal)
-    modal.bind("<Escape>", lambda e: close_modal())
+    modal.bind("<Escape>", _on_modal_escape)
 
     modal.grab_set()
     modal.focus_set()
@@ -995,6 +1025,14 @@ def create_dashboard():
 
     def _on_escape(event=None):
         if active_modal and active_modal.winfo_exists():
+            logger.info("Escape pressed while edit modal is open, closing modal only...")
+            if callable(active_modal_close):
+                active_modal_close()
+            else:
+                try:
+                    active_modal.destroy()
+                except Exception:
+                    pass
             return "break"
         if search_state["mode"]:
             _exit_search_mode()
