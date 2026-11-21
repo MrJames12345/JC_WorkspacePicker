@@ -796,16 +796,22 @@ def center_window_on_second_monitor(window):
     except Exception as e:
         log_warn(f"Post-placement verification error: {e}")
 
+def is_alt_event(event):
+    """Return True if Alt was held during a Tkinter key or mouse event.
+    On Windows, 0x8 (Mod1) is NumLock; real Alt is 0x20000 (ALT_MASK)."""
+    if not event:
+        return False
+    if sys.platform == "win32":
+        return bool(event.state & 0x20000)
+    return bool(event.state & 0x8) or bool(event.state & 0x20000)
+
 def char_from_key_event(event):
     """
     Return a printable character from a KeyPress event if not pressed with Ctrl or Alt.
     Handles Windows NumLock state (0x8) gracefully so NumLock doesn't register as Alt.
     """
     ctrl = bool(event.state & 0x4)
-    if sys.platform == "win32":
-        alt = bool(event.state & 0x20000)
-    else:
-        alt = bool(event.state & 0x8) or bool(event.state & 0x20000)
+    alt = is_alt_event(event)
     if ctrl or alt:
         return ""
     if event.char and event.char.isprintable():

@@ -894,19 +894,22 @@ def create_dashboard():
 
             def handle_click(event, prof=profile):
                 is_shift = bool(event and (event.state & 0x1))
-                is_alt = bool(event and (event.state & (0x20000 | 0x0008)))
+                is_alt = utils.is_alt_event(event)
                 if is_shift:
-                    logger.info(f"Shift+Click on tile: '{prof.get('name')}'")
+                    logger.info(f"Shift+Click on tile: '{prof.get('name')}' (state={hex(event.state)})")
                     open_edit_modal(prof)
                 elif is_alt:
-                    logger.info(f"Alt+Click on tile: '{prof.get('name')}' (big Chrome only)")
+                    logger.info(f"Alt+Click on tile: '{prof.get('name')}' (big Chrome only, state={hex(event.state)})")
                     select_profile(prof, big_chrome_only=True)
                 else:
+                    logger.info(f"Click on tile: '{prof.get('name')}' (state={hex(event.state) if event else 'None'})")
                     select_profile(prof)
+                return "break"
 
             def handle_shift_click(event, prof=profile):
                 logger.info(f"<Shift-Button-1> on tile: '{prof.get('name')}'")
                 open_edit_modal(prof)
+                return "break"
 
             def handle_alt_click(event, prof=profile):
                 logger.info(f"<Alt-Button-1> on tile: '{prof.get('name')}' (big Chrome only)")
@@ -975,7 +978,7 @@ def create_dashboard():
             return "break"
         target_profile = matching_profiles[0]
         is_shift = bool(event and (event.state & 0x1))
-        is_alt = force_alt or bool(event and (event.state & (0x20000 | 0x0008)))
+        is_alt = force_alt or utils.is_alt_event(event)
         if is_shift:
             logger.info(f"Shift+Enter pressed: opening modal for profile='{target_profile.get('name')}'")
             open_edit_modal(target_profile)
