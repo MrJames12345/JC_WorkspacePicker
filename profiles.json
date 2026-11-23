@@ -5,7 +5,7 @@
         "commandChrome": "\"C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe\" --profile-directory=\"Profile 1\"",
         "openChrome1": true,
         "chrome1Urls": [
-            "https://keep.google.com/u/0/#NOTE/1dnsU7kmX7A0aAzGJAc_1SY50s22xKTqww2iq36tbl_SECuH3yg1nDiI7IB40Zz8",
+            "https://keep.google.com/",
             "https://gemini.google.com/u/1/notebook/604cf2db-65ab-4fe8-b35e-d191f171fc5d"
         ],
         "openChrome2": true,
@@ -112,6 +112,15 @@
     {
         "name": "RollingAlarm",
         "commandEdge": "\"C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe\" --profile-directory=\"Profile 1000\"",
-        "commandChrome": "\"C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe\" --profile-directory=\"Profile 11\""
+        "commandChrome": "\"C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe\" --profile-directory=\"Profile 11\"",
+        "openChrome1": true,
+        "chrome1Urls": [
+            "https://keep.google.com/u/0/#label/Rolling%20Alarm",
+            "https://gemini.google.com/u/1/app/cecf66ec3cb1a6fb?authuser=jayms12345@gmail.com"
+        ],
+        "openChrome2": true,
+        "chrome2Urls": [],
+        "openJCTheGoodWorkspace": true,
+        "openWorkspace": true
     }
 ]
